@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- mapper -->
+<mapper namespace="mapper.todo">
+
+	<select id="selectAllTodoList"  resultType="todoVO" parameterType="String">
+		<![CDATA[
+			select * from todo
+			where userid = #{userid}
+			order by todoseq desc
+		]]>
+	</select>
+
+	<insert id="insertTodo"  parameterType="todoVO">
+		<![CDATA[
+			insert into todo(todoseq, userid, title, content, deadline, result)
+			values(todo_seq.nextval,#{userid}, #{title}, #{content}, #{deadline}, #{result})
+		]]>
+	</insert>
+	
+	<select id="detailTodo"  resultType="todoVO"  parameterType="int">
+		<![CDATA[
+			select * from todo
+			where todoseq = #{todoseq}
+			order by todoseq desc
+		]]>
+	</select>
+	
+	<update id="updateTodo"  parameterType="todoVO">
+		<![CDATA[
+			update todo
+			set todoseq=#{todoseq}, title=#{title}, content=#{content}, deadline=#{deadline}, result=#{result}
+			where
+			todoseq=#{todoseq}
+		]]>
+	</update>
+
+	<delete id="deleteTodo"  parameterType="int">
+		<![CDATA[
+			delete from todo
+			where
+			todoseq=#{todoseq}
+		]]>
+	</delete>
+
+	 <select id="todoListPage" parameterType="map" resultType="todoVO">
+       <![CDATA[
+	    select * from (
+	        select t.*, row_number() over (order by todoseq desc) as rnum
+	        from (select * from todo where userid = #{userid}) t
+	    )
+	    where rnum between #{start} and #{end}
+    ]]>
+    </select>
+
+	<select id="countTodoList" parameterType="String" resultType="int">
+        <![CDATA[
+        select count(*) from todo
+        where userid = #{userid}
+        ]]>
+    </select>
+
+	<select id="searchTodoList" parameterType="map" resultType="todoVO">
+    <![CDATA[
+	    select * from (
+	        select t.*, row_number() over (order by todoseq desc) as rnum
+	        from (
+	        	select * from todo where userid = #{userid} and ${searchType} like '%' || #{keyword} || '%'
+	   		) t
+	   	)
+	    where rnum between #{start} and #{end}
+	  ]]>
+	</select>
+
+	<select id="countSearch" parameterType="map" resultType="int">
+	    <![CDATA[
+		    select count(*) 
+		    from todo 
+		    where userid = #{userid} 
+		    and (${searchType} like '%' || #{keyword} || '%')
+	    ]]>
+	</select>
+
+</mapper>
+	

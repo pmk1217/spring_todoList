@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- mapper -->
+<mapper namespace="mapper.member">
+
+	<select id="selectAllMemberList"  resultType="memberVO">
+		<![CDATA[
+			select * from todouser
+		]]>
+	</select>
+
+	<select id="login"  parameterType="String"  resultType="memberVO">
+			<![CDATA[
+			select * from todouser
+			where
+			userid = #{userid} AND userpwd = #{userpwd}
+		]]>
+	</select>
+
+	<select id="idDuplicated"  parameterType="String"  resultType="String">
+			<![CDATA[
+			select userid from todouser
+			where
+			userid = #{userid}
+		]]>
+	</select>
+
+	<insert id="insertMember"  parameterType="memberVO">
+		<![CDATA[
+			insert into todouser(userid, userpwd, username)
+			values(#{userid}, #{userpwd}, #{username})
+		]]>
+	</insert>
+
+	<update id="updateMember"  parameterType="memberVO">
+		<![CDATA[
+			update todouser
+			set pwd=#{pwd}, name=#{name}, email=#{email}
+			where
+			id=#{id}
+		]]>
+	</update>
+
+	<delete id="deleteMember"  parameterType="String">
+		<![CDATA[
+			delete from todouser
+			where
+			userid=#{userid}
+		]]>
+	</delete>
+
+</mapper>
+	
